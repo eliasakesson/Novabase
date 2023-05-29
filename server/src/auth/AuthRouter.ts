@@ -19,14 +19,11 @@ router.post("/login", (req, res) => {
 });
 
 router.post("/users", (req, res) => {
-	console.log(req.body);
 	CreateUser({ ...req.body })
 		.then((user) => {
-			console.log({ body: user, ok: true });
 			res.status(201).send(JSON.stringify({ body: user, ok: true }));
 		})
 		.catch((err) => {
-			console.log({ body: err.error, ok: false });
 			res.status(err.status).send(
 				JSON.stringify({ body: err.error, ok: false })
 			);

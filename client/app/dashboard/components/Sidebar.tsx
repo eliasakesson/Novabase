@@ -4,6 +4,7 @@ import { useAuth } from "@/components/AuthContext";
 import { Label } from "@/components/ui/label";
 import { GetDatabase } from "@/utils/DataManager";
 import { useEffect, useState } from "react";
+import CreateTableDialog from "./CreateTableDialog";
 
 export default function Sidebar() {
 	const { user } = useAuth();
@@ -34,6 +35,7 @@ export default function Sidebar() {
 		<div className="h-full border-r p-4 flex flex-col gap-4">
 			<DatabaseSwitcher databases={databases} />
 			<Label>Tables</Label>
+			<CreateTableDialog />
 		</div>
 	);
 }

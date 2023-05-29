@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Database",
+  name: "Novabase",
   description:
     "Beautifully designed database built by the legend Elias",
   mainNav: [
