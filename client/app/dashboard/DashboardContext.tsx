@@ -20,7 +20,8 @@ export const DashboardProvider = ({ children }: any) => {
 				setSelectedDatabase,
 				selectedTable,
 				setSelectedTable,
-			}}>
+			}}
+		>
 			{children}
 		</DashboardContext.Provider>
 	);

@@ -64,6 +64,11 @@ router.get("/databases/:id/tables", (req, res) => {
 		});
 });
 
+// router.post("/databases/:id/tables/:tableId", (req, res) => {
+// 	const { id, tableId } = req.params;
+// 	const { tableName, tableSchema } = req.body;
+// });
+
 router.get("/databases/:id/tables/:tableId", (req, res) => {
 	const { id, tableId } = req.params;
 

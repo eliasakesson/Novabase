@@ -12,6 +12,7 @@ export default function CreateTable(
 
 			await AddTable(db, tableName, tableSchema);
 			const table = await GetTable(id, tableName);
+			console.log(table);
 
 			res(table);
 		} catch (error) {
@@ -42,20 +43,15 @@ function AddTable(
 					error: `Table ${tableName} already exists`,
 					status: 400,
 				});
-			} else {
-				await db.run(
-					`CREATE TABLE ${tableName} (
-                        ${tableSchema
-							.map(
-								(column) =>
-									`${column.key} ${column.type}`
-							)
-							.join(", ")}
-                    )`
-				);
-
-				res();
 			}
+
+			await db.run(
+				`CREATE TABLE ${tableName} (
+					${tableSchema.map((column) => `${column.key} ${column.type}`).join(", ")}
+				)`
+			);
+
+			res();
 		} catch (error) {
 			rej({ error, status: 500 });
 		}

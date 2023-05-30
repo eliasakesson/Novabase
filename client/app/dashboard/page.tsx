@@ -22,7 +22,6 @@ export default function DashboardPage() {
 			<div className="flex h-[calc(100vh-65px)]">
 				<Sidebar />
 				<div className="flex flex-col gap-4 p-16">
-					<h1 className="text-3xl font-extrabold">Dashboard</h1>
 					<Table />
 				</div>
 			</div>

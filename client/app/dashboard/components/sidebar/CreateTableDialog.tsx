@@ -24,11 +24,20 @@ import {
 import { CreateTable } from "@/utils/DataManager";
 import { useState } from "react";
 
+interface ColumnProps {
+	key: string;
+	type: string;
+}
+
 export default function CreateTableDialog() {
 	const [open, setOpen] = useState(false);
-	const [tableName, setTableName] = useState("");
 	const { user } = useAuth();
-	const { selectedDatabase } = useDashboard();
+	const { selectedDatabase, setSelectedTable } = useDashboard();
+
+	const [tableName, setTableName] = useState("");
+	const [columns, setColumns] = useState<ColumnProps[]>([
+		{ key: "", type: "TEXT" },
+	]);
 
 	function createTable() {
 		if (!user) return console.error("User is not logged in.");
@@ -37,11 +46,9 @@ export default function CreateTableDialog() {
 		if (tableName.length < 3)
 			return console.error("Name must be at least 3 characters long.");
 
-		CreateTable(selectedDatabase.id, tableName, [
-			{ key: "name", type: "TEXT" },
-		])
-			.then((data) => {
-				console.log(data);
+		CreateTable(selectedDatabase.id, tableName, columns)
+			.then((data: any) => {
+				setSelectedTable(data);
 				setOpen(false);
 			})
 			.catch((err) => {
@@ -64,7 +71,7 @@ export default function CreateTableDialog() {
 					</DialogDescription>
 				</DialogHeader>
 				<div>
-					<div className="space-y-4 py-2 pb-4">
+					<div className="py-2 pb-4">
 						<div className="space-y-2">
 							<Label htmlFor="name">Table name</Label>
 							<Input
@@ -74,46 +81,47 @@ export default function CreateTableDialog() {
 								onChange={(e) => setTableName(e.target.value)}
 							/>
 						</div>
-						<div className="grid grid-cols-2 gap-4">
-							<div className="space-y-2">
-								<Label htmlFor="name">Key</Label>
-								<Input
-									id="name"
-									placeholder="Acme Inc."
-									value={tableName}
-									onChange={(e) =>
-										setTableName(e.target.value)
+						<div className="grid grid-cols-2 gap-4 mt-4">
+							<h3 className="text-sm font-medium">Keys</h3>
+							<h3 className="text-sm font-medium">Data types</h3>
+						</div>
+						<div className="flex flex-col gap-2">
+							{columns.map((column, i) => (
+								<TableField
+									column={column}
+									setColumn={(column: any) =>
+										setColumns(
+											columns.map((c, j) =>
+												i === j ? column : c
+											)
+										)
 									}
+									key={i}
 								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="name">Data type</Label>
-								<Select>
-									<SelectTrigger>
-										<SelectValue placeholder="Select a fruit" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectGroup>
-											<SelectLabel>Fruits</SelectLabel>
-											<SelectItem value="apple">
-												Apple
-											</SelectItem>
-											<SelectItem value="banana">
-												Banana
-											</SelectItem>
-											<SelectItem value="blueberry">
-												Blueberry
-											</SelectItem>
-											<SelectItem value="grapes">
-												Grapes
-											</SelectItem>
-											<SelectItem value="pineapple">
-												Pineapple
-											</SelectItem>
-										</SelectGroup>
-									</SelectContent>
-								</Select>
-							</div>
+							))}
+						</div>
+						<div className="flex justify-end mt-4">
+							<Button
+								variant="ghost"
+								onClick={() =>
+									setColumns((columns) => [
+										...columns,
+										{ key: "", type: "text" },
+									])
+								}
+							>
+								Add column
+							</Button>
+							<Button
+								variant="ghost"
+								onClick={() =>
+									setColumns((columns) =>
+										columns.slice(0, -1)
+									)
+								}
+							>
+								Remove column
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -125,5 +133,53 @@ export default function CreateTableDialog() {
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
+	);
+}
+
+function TableField({
+	column,
+	setColumn,
+}: {
+	column: ColumnProps;
+	setColumn: (column: ColumnProps) => void;
+}) {
+	return (
+		<div className="grid grid-cols-2 gap-4">
+			<div className="space-y-2">
+				<Label className="sr-only" htmlFor="name">
+					Key
+				</Label>
+				<Input
+					id="name"
+					placeholder="Acme Inc."
+					value={column.key}
+					onChange={(e) =>
+						setColumn({ ...column, key: e.target.value })
+					}
+				/>
+			</div>
+			<div className="space-y-2">
+				<Label className="sr-only" htmlFor="name">
+					Data type
+				</Label>
+				<Select
+					value={column.type}
+					onValueChange={(value) =>
+						setColumn({ ...column, type: value })
+					}
+				>
+					<SelectTrigger>
+						<SelectValue placeholder="Select a fruit" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectGroup>
+							<SelectItem value="TEXT">TEXT</SelectItem>
+							<SelectItem value="INTEGER">INTEGER</SelectItem>
+							<SelectItem value="REAL">FLOAT</SelectItem>
+						</SelectGroup>
+					</SelectContent>
+				</Select>
+			</div>
+		</div>
 	);
 }
