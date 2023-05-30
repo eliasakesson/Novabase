@@ -20,7 +20,7 @@ export default function LoginUser({
 
 			res(user);
 		} catch (error) {
-			rej({ error: "No user with those credentials", status: 500 });
+			rej({ error: "No user with those credentials", status: 400 });
 		}
 	});
 }

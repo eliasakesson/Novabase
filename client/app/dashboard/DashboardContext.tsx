@@ -1,15 +1,26 @@
 import { createContext, useContext, useState } from "react";
 
 const DashboardContext = createContext({
-	database: null as DatabaseProps | null,
-	setDatabase: (database: DatabaseProps | null) => {},
+	selectedDatabase: null as DatabaseProps | null,
+	setSelectedDatabase: (database: DatabaseProps | null) => {},
+	selectedTable: null as TableProps | null,
+	setSelectedTable: (table: TableProps | null) => {},
 });
 
 export const DashboardProvider = ({ children }: any) => {
-	const [database, setDatabase] = useState<DatabaseProps | null>(null);
+	const [selectedDatabase, setSelectedDatabase] =
+		useState<DatabaseProps | null>(null);
+
+	const [selectedTable, setSelectedTable] = useState<TableProps | null>(null);
 
 	return (
-		<DashboardContext.Provider value={{ database, setDatabase }}>
+		<DashboardContext.Provider
+			value={{
+				selectedDatabase,
+				setSelectedDatabase,
+				selectedTable,
+				setSelectedTable,
+			}}>
 			{children}
 		</DashboardContext.Provider>
 	);
@@ -33,6 +44,6 @@ interface TableProps {
 
 interface ColumnProps {
 	id: string;
-	name: string;
+	key: string;
 	type: string;
 }

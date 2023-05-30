@@ -50,3 +50,86 @@ export function GetDatabase(id: string) {
 		}
 	});
 }
+
+export function CreateTable(
+	id: string,
+	tableName: string,
+	tableSchema: { key: string; type: string }[]
+) {
+	return new Promise(async (res, rej) => {
+		try {
+			const fetched = await fetch(
+				`http://localhost:8080/v1/data/databases/${id}/tables`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ tableName, tableSchema }),
+				}
+			);
+
+			const data = await fetched.json();
+
+			if (data.ok) {
+				res(data.body);
+			}
+
+			rej(data.body);
+		} catch (err: any) {
+			rej(err.body);
+		}
+	});
+}
+
+export function GetTable(id: string, tableName: string) {
+	return new Promise(async (res, rej) => {
+		try {
+			const fetched = await fetch(
+				`http://localhost:8080/v1/data/databases/${id}/tables/${tableName}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			const data = await fetched.json();
+
+			if (data.ok) {
+				res(data.body);
+			}
+
+			rej(data.body);
+		} catch (err: any) {
+			rej(err.body);
+		}
+	});
+}
+
+export function GetTables(id: string) {
+	return new Promise(async (res, rej) => {
+		try {
+			const fetched = await fetch(
+				`http://localhost:8080/v1/data/databases/${id}/tables`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			const data = await fetched.json();
+
+			if (data.ok) {
+				res(data.body);
+			}
+
+			rej(data.body);
+		} catch (err: any) {
+			rej(err.body);
+		}
+	});
+}

@@ -1,7 +1,8 @@
 "use client";
 
 import { DashboardProvider } from "./DashboardContext";
-import Sidebar from "./components/Sidebar";
+import Table from "./components/main/Table";
+import Sidebar from "./components/sidebar/Sidebar";
 import { useAuth } from "@/components/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -18,9 +19,12 @@ export default function DashboardPage() {
 
 	return (
 		<DashboardProvider>
-			<div className="flex">
+			<div className="flex h-[calc(100vh-65px)]">
 				<Sidebar />
-				<h1>Dashboard</h1>
+				<div className="flex flex-col gap-4 p-16">
+					<h1 className="text-3xl font-extrabold">Dashboard</h1>
+					<Table />
+				</div>
 			</div>
 		</DashboardProvider>
 	);

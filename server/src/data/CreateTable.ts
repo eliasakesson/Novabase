@@ -11,7 +11,7 @@ export default function CreateTable(
 			const db = await OpenDatabase(`databases/${id}.db`);
 
 			await AddTable(db, tableName, tableSchema);
-			const table = await GetTable(db, tableName);
+			const table = await GetTable(id, tableName);
 
 			res(table);
 		} catch (error) {
@@ -22,8 +22,8 @@ export default function CreateTable(
 
 interface TableSchema
 	extends Array<{
-		column: string;
-		dataType: string;
+		key: string;
+		type: string;
 	}> {}
 
 function AddTable(
@@ -48,7 +48,7 @@ function AddTable(
                         ${tableSchema
 							.map(
 								(column) =>
-									`${column.column} ${column.dataType}`
+									`${column.key} ${column.type}`
 							)
 							.join(", ")}
                     )`

@@ -67,8 +67,7 @@ export default function CreateDatabaseDialog({
 				<DialogFooter>
 					<Button
 						variant="outline"
-						onClick={() => onOpenChange(false)}
-					>
+						onClick={() => onOpenChange(false)}>
 						Cancel
 					</Button>
 					<Button onClick={createDatabase}>Continue</Button>
