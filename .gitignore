@@ -1,4 +1,4 @@
-/data
+/server/data
 package-lock.json
 node_modules
 .pnp

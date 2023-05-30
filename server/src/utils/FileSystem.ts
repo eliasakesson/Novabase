@@ -6,7 +6,7 @@ import { open } from "sqlite";
 export function CreateFile(filePath: string, fileName: string): Promise<void> {
 	return new Promise((res, rej) => {
 		try {
-			const dir = path.join(__dirname, "../../../data", filePath);
+			const dir = path.join(__dirname, "../../data", filePath);
 
 			// check if the directory exists, create it if it doesn't
 			if (!fs.existsSync(dir)) {
@@ -33,7 +33,7 @@ export function CreateFile(filePath: string, fileName: string): Promise<void> {
 export function OpenDatabase(filePath: string): Promise<any> {
 	return new Promise(async (res, rej) => {
 		try {
-			const file = path.join(__dirname, "../../../data", filePath);
+			const file = path.join(__dirname, "../../data", filePath);
 
 			const db = await open({
 				filename: file,
