@@ -1,10 +1,10 @@
-import { DatabaseProps } from "../DashboardContext";
+import { DatabaseProps } from "../../DashboardContext";
+import CreateTableDialog from "./CreateTableDialog";
 import DatabaseSwitcher from "./DatabaseSwitcher";
+import TableList from "./TableList";
 import { useAuth } from "@/components/AuthContext";
-import { Label } from "@/components/ui/label";
 import { GetDatabase } from "@/utils/DataManager";
 import { useEffect, useState } from "react";
-import CreateTableDialog from "./CreateTableDialog";
 
 export default function Sidebar() {
 	const { user } = useAuth();
@@ -34,7 +34,7 @@ export default function Sidebar() {
 	return (
 		<div className="h-full border-r p-4 flex flex-col gap-4">
 			<DatabaseSwitcher databases={databases} />
-			<Label>Tables</Label>
+			<TableList />
 			<CreateTableDialog />
 		</div>
 	);

@@ -30,7 +30,7 @@ export default function CreateDatabase(name: string, ownerUID: string) {
 function CreateDatabaseTable(db: any): Promise<void> {
 	return new Promise(async (res, rej) => {
 		try {
-			await db.run(`CREATE TABLE IF NOT EXISTS database (
+			await db.run(`CREATE TABLE IF NOT EXISTS __database (
                 id TEXT PRIMARY KEY,
                 name TEXT,
                 ownerUID TEXT
@@ -52,7 +52,7 @@ function InsertDatabase(
 	return new Promise(async (res, rej) => {
 		try {
 			await db.run(
-				`INSERT INTO database (id, name, ownerUID) VALUES (?, ?, ?)`,
+				`INSERT INTO __database (id, name, ownerUID) VALUES (?, ?, ?)`,
 				[id, name, ownerUID]
 			);
 

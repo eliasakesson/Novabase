@@ -6,7 +6,7 @@ export default function GetDatabase(id: string) {
 			const db = await OpenDatabase(`databases/${id}.db`);
 
 			const database = await db.get(
-				`SELECT * FROM database WHERE id = ?`,
+				`SELECT * FROM __database WHERE id = ?`,
 				[id]
 			);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { DatabaseProps } from "../DashboardContext";
+import { DatabaseProps, useDashboard } from "../../DashboardContext";
 import CreateDatabaseDialog from "./CreateDatabaseDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,8 @@ export default function DatabaseSwitcher({
 }: DatabaseSwitcherProps & { databases: DatabaseProps[] }) {
 	const [open, setOpen] = useState(false);
 	const [showNewDatabaseDialog, setShowNewDatabaseDialog] = useState(false);
-	const [selectedDatabase, setSelectedDatabase] = useState<DatabaseProps>();
+	const { selectedDatabase, setSelectedDatabase, setSelectedTable } =
+		useDashboard();
 
 	useEffect(() => {
 		if (databases.length > 0 && !selectedDatabase) {
@@ -46,8 +47,7 @@ export default function DatabaseSwitcher({
 	return (
 		<CreateDatabaseDialog
 			open={showNewDatabaseDialog}
-			onOpenChange={setShowNewDatabaseDialog}
-		>
+			onOpenChange={setShowNewDatabaseDialog}>
 			<Popover open={open} onOpenChange={setOpen}>
 				<PopoverTrigger asChild>
 					<Button
@@ -56,8 +56,7 @@ export default function DatabaseSwitcher({
 						role="combobox"
 						aria-expanded={open}
 						aria-label="Select a Database"
-						className={cn("w-[200px] justify-between", className)}
-					>
+						className={cn("w-[200px] justify-between", className)}>
 						<Avatar className="mr-2 h-5 w-5">
 							<AvatarImage
 								src={`https://avatar.vercel.sh/${selectedDatabase?.name}.png`}
@@ -78,11 +77,11 @@ export default function DatabaseSwitcher({
 									<CommandItem
 										key={database.name}
 										onSelect={() => {
+											setSelectedTable(null);
 											setSelectedDatabase(database);
 											setOpen(false);
 										}}
-										className="text-sm"
-									>
+										className="text-sm">
 										<Avatar className="mr-2 h-5 w-5">
 											<AvatarImage
 												src={`https://avatar.vercel.sh/${database.name}.png`}
@@ -112,8 +111,7 @@ export default function DatabaseSwitcher({
 										onSelect={() => {
 											setOpen(false);
 											setShowNewDatabaseDialog(true);
-										}}
-									>
+										}}>
 										<PlusCircle className="mr-2 h-5 w-5" />
 										Create Database
 									</CommandItem>
