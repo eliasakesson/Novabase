@@ -2,7 +2,7 @@ import { useDashboard } from "../../DashboardContext";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { DeleteTable, GetTable } from "@/utils/DataManager";
-import { Trash2 } from "lucide-react";
+import { Trash2, Plus, Edit, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 interface TableProps {
@@ -14,8 +14,8 @@ export default function Table() {
 	const { selectedDatabase, selectedTable, setSelectedTable } =
 		useDashboard();
 	const [table, setTable] = useState<TableProps>({ columns: [], rows: [] });
-	const [rowToAdd, setRowToAdd] = useState<any>({});
-	console.log(table.columns);
+	const [rowToAdd, setRowToAdd] = useState<any>(null);
+	console.log(rowToAdd);
 
 	useEffect(() => {
 		if (!selectedTable || !selectedDatabase) return;
@@ -41,6 +41,8 @@ export default function Table() {
 				console.log(err);
 			});
 	}
+
+	function addRow() {}
 
 	if (!selectedTable) return null;
 
@@ -71,7 +73,7 @@ export default function Table() {
 						))}
 						<th>
 							<Button variant="ghost" className="ml-4">
-								Add Column
+								<Plus />
 							</Button>
 						</th>
 					</tr>
@@ -85,10 +87,10 @@ export default function Table() {
 							{Object.keys(rowToAdd).map((column, i) => (
 								<td
 									key={i}
-									className="flex-1 p-2 border flex items-center gap-2">
+									className="flex-1 border flex items-center gap-2">
 									<input
 										type="text"
-										className="w-full"
+										className="w-full p-2"
 										placeholder={column}
 										value={rowToAdd[column]}
 										onChange={(e) =>
@@ -100,6 +102,14 @@ export default function Table() {
 									/>
 								</td>
 							))}
+							<td>
+								<Button
+									variant="ghost"
+									onClick={addRow}
+									className="ml-4">
+									<Check />
+								</Button>
+							</td>
 						</tr>
 					)}
 				</tbody>

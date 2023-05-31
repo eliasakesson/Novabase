@@ -65,15 +65,15 @@ router.get("/databases/:id/tables", (req, res) => {
 		});
 });
 
-// router.post("/databases/:id/tables/:tableId", (req, res) => {
-// 	const { id, tableId } = req.params;
-// 	const { tableName, tableSchema } = req.body;
-// });
+router.post("/databases/:id/tables/:tableName", (req, res) => {
+	const { id, tableName } = req.params;
+	const { table } = req.body;
+});
 
-router.get("/databases/:id/tables/:tableId", (req, res) => {
-	const { id, tableId } = req.params;
+router.get("/databases/:id/tables/:tableName", (req, res) => {
+	const { id, tableName } = req.params;
 
-	GetTable(id, tableId)
+	GetTable(id, tableName)
 		.then((table) => {
 			res.status(200).send(JSON.stringify({ body: table, ok: true }));
 		})
