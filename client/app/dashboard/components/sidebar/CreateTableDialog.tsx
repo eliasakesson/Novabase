@@ -106,7 +106,7 @@ export default function CreateTableDialog() {
 								onClick={() =>
 									setColumns((columns) => [
 										...columns,
-										{ key: "", type: "text" },
+										{ key: "", type: "TEXT" },
 									])
 								}
 							>

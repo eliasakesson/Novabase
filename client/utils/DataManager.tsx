@@ -160,7 +160,11 @@ export function DeleteTable(id: string, tableName: string) {
 	});
 }
 
-export function InsertIntoTable(id: string, tableName: string, table: object) {
+export function InsertIntoTable(
+	id: string,
+	tableName: string,
+	table: { key: string; value: string }[]
+) {
 	return new Promise(async (res, rej) => {
 		try {
 			const fetched = await fetch(

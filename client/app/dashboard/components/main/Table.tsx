@@ -1,20 +1,20 @@
 import { useDashboard } from "../../DashboardContext";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
-import { DeleteTable, GetTable } from "@/utils/DataManager";
+import { DeleteTable, GetTable, InsertIntoTable } from "@/utils/DataManager";
 import { Trash2, Plus, Edit, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 interface TableProps {
 	columns: { name: string; type: string }[];
-	rows: object[];
+	rows: { key: string; value: string }[];
 }
 
 export default function Table() {
 	const { selectedDatabase, selectedTable, setSelectedTable } =
 		useDashboard();
 	const [table, setTable] = useState<TableProps>({ columns: [], rows: [] });
-	const [rowToAdd, setRowToAdd] = useState<any>(null);
+	const [rowToAdd, setRowToAdd] = useState<any>([]);
 	console.log(rowToAdd);
 
 	useEffect(() => {
@@ -42,7 +42,18 @@ export default function Table() {
 			});
 	}
 
-	function addRow() {}
+	function addRow() {
+		if (!selectedTable || !selectedDatabase) return;
+
+		InsertIntoTable(selectedDatabase.id, selectedTable.name, rowToAdd)
+			.then(() => {
+				setRowToAdd(null);
+				setTable({ ...table, rows: [...table.rows, rowToAdd] });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	if (!selectedTable) return null;
 
@@ -64,7 +75,8 @@ export default function Table() {
 						{table.columns.map((column, i) => (
 							<th
 								key={i}
-								className="flex-1 p-2 border flex items-center gap-2">
+								className="flex-1 p-2 border flex items-center gap-2"
+							>
 								<span>{column.name}</span>
 								<span className="text-xs text-gray-400">
 									({column.type})
@@ -82,22 +94,27 @@ export default function Table() {
 					{table.rows.map((row, i) => (
 						<tr key={i}></tr>
 					))}
-					{rowToAdd && (
+					{rowToAdd.length > 0 && (
 						<tr className="flex w-full">
-							{Object.keys(rowToAdd).map((column, i) => (
+							{rowToAdd.map((column: any, i: number) => (
 								<td
 									key={i}
-									className="flex-1 border flex items-center gap-2">
+									className="flex-1 border flex items-center gap-2"
+								>
 									<input
 										type="text"
 										className="w-full p-2"
-										placeholder={column}
-										value={rowToAdd[column]}
+										placeholder={column.key}
+										value={column.value}
 										onChange={(e) =>
-											setRowToAdd({
-												...rowToAdd,
-												[column]: e.target.value,
-											})
+											setRowToAdd([
+												...rowToAdd.slice(0, i),
+												{
+													...column,
+													value: e.target.value,
+												},
+												...rowToAdd.slice(i + 1),
+											])
 										}
 									/>
 								</td>
@@ -106,7 +123,8 @@ export default function Table() {
 								<Button
 									variant="ghost"
 									onClick={addRow}
-									className="ml-4">
+									className="ml-4"
+								>
 									<Check />
 								</Button>
 							</td>
@@ -118,11 +136,12 @@ export default function Table() {
 				variant="default"
 				onClick={() =>
 					setRowToAdd(
-						Object.fromEntries(
-							table.columns.map((k) => [k.name, ""])
-						)
+						table.columns.map((column) => {
+							return { key: column.name, value: "" };
+						})
 					)
-				}>
+				}
+			>
 				Add Row
 			</Button>
 		</div>

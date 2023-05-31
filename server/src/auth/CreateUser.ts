@@ -91,9 +91,9 @@ function InsertUser(
 	password: string,
 	email: string
 ): Promise<void> {
-	return new Promise((res, rej) => {
+	return new Promise(async (res, rej) => {
 		try {
-			db.run(
+			await db.run(
 				`INSERT INTO users (uid, username, password, email) VALUES (?, ?, ?, ?)`,
 				[id, username, password, email]
 			);
