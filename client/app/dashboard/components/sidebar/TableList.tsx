@@ -14,9 +14,7 @@ export default function TableList() {
 	}, [selectedDatabase]);
 
 	useEffect(() => {
-		if (!selectedTable) return;
-
-		if (!tables.includes(selectedTable)) {
+		if (!selectedTable || !tables.includes(selectedTable)) {
 			SetTables();
 		}
 	}, [selectedTable]);
@@ -51,8 +49,7 @@ export default function TableList() {
 						key={table.name}
 						variant="ghost"
 						className="justify-start"
-						onClick={() => setSelectedTable(table)}
-					>
+						onClick={() => setSelectedTable(table)}>
 						{table.name}
 					</Button>
 				))}
