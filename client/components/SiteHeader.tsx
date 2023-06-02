@@ -28,8 +28,7 @@ export function SiteHeader() {
 										className={buttonVariants({
 											size: "sm",
 											variant: "ghost",
-										})}
-									>
+										})}>
 										Go to Dashboard
 									</Link>
 								)}
@@ -39,8 +38,7 @@ export function SiteHeader() {
 							<>
 								<Link
 									href="/register"
-									className={buttonVariants({ size: "lg" })}
-								>
+									className={buttonVariants({ size: "lg" })}>
 									Get Started
 								</Link>
 								<Link
@@ -48,12 +46,12 @@ export function SiteHeader() {
 									className={buttonVariants({
 										variant: "outline",
 										size: "lg",
-									})}
-								>
+									})}>
 									Login
 								</Link>
 							</>
 						)}
+						<ThemeToggle />
 					</nav>
 				</div>
 			</div>

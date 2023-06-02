@@ -6,6 +6,7 @@ import GetTables from "./GetTables";
 import GetTable from "./GetTable";
 import RemoveTable from "./RemoveTable";
 import PostTable from "./PostTable";
+import DeleteTableRow from "./DeleteTableRow";
 
 const router = express.Router();
 
@@ -69,7 +70,7 @@ router.get("/databases/:id/tables", (req, res) => {
 router.post("/databases/:id/tables/:tableName", (req, res) => {
 	const { id, tableName } = req.params;
 	const { table } = req.body;
-	console.log(table);
+	console.log("Table: " + table);
 
 	PostTable(id, tableName, table)
 		.then((table) => {
@@ -109,5 +110,20 @@ router.delete("/databases/:id/tables/:tableId", (req, res) => {
 			);
 		});
 });
+
+router.delete("/databases/:id/tables/:tableId/rows", (req, res) => {
+	const { id, tableId } = req.params;
+	const { row } = req.body;
+
+	DeleteTableRow(id, tableId, row)
+		.then(() => {
+			res.status(200).send(JSON.stringify({ body: {}, ok: true }));
+		})
+		.catch((err) => {
+			res.status(err.status).send(
+				JSON.stringify({ body: err.error, ok: false })
+			);
+		});
+})
 
 export default router;

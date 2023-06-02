@@ -7,7 +7,6 @@ export default function GetTable(id: string, name: string) {
 
 			const columns = await db.all(`PRAGMA table_info(${name})`);
 			const rows = await db.all(`SELECT * FROM ${name}`);
-			console.log(id, name, rows);
 
 			if (
 				(!rows || rows.length === 0) &&

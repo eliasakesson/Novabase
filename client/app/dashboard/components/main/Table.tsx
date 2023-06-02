@@ -1,7 +1,13 @@
 import { useDashboard } from "../../DashboardContext";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { DeleteTable, GetTable, InsertIntoTable } from "@/utils/DataManager";
+import {
+	DeleteTable,
+	DeleteTableRow,
+	GetTable,
+	InsertIntoTable,
+} from "@/utils/DataManager";
 import { Trash2, Plus, Edit, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
@@ -15,9 +21,12 @@ export default function Table() {
 		useDashboard();
 	const [table, setTable] = useState<TableProps>({ columns: [], rows: [] });
 	const [rowToAdd, setRowToAdd] = useState<any>([]);
-	console.log(rowToAdd);
 
 	useEffect(() => {
+		getTable();
+	}, [selectedTable]);
+
+	function getTable() {
 		if (!selectedTable || !selectedDatabase) return;
 
 		GetTable(selectedDatabase.id, selectedTable.name)
@@ -28,7 +37,7 @@ export default function Table() {
 			.catch((err) => {
 				console.log(err);
 			});
-	}, [selectedTable]);
+	}
 
 	function removeTable() {
 		if (!selectedTable || !selectedDatabase) return;
@@ -48,17 +57,44 @@ export default function Table() {
 		InsertIntoTable(selectedDatabase.id, selectedTable.name, rowToAdd)
 			.then(() => {
 				setRowToAdd(null);
-				setTable({ ...table, rows: [...table.rows, rowToAdd] });
+				getTable();
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	}
 
-	if (!selectedTable) return null;
+	function deleteTableRow(row: any) {
+		if (!selectedTable || !selectedDatabase) return;
+		console.log(row);
+
+		DeleteTableRow(selectedDatabase.id, selectedTable.name, row)
+			.then(() => {
+				getTable();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	if (!selectedDatabase || !selectedTable) return null;
 
 	return (
 		<div className="flex flex-col gap-4 items-start">
+			<div className="flex items-center gap-2 border rounded-lg">
+				<Avatar className="ml-4 h-5 w-5">
+					<AvatarImage
+						src={`https://avatar.vercel.sh/${selectedDatabase?.name}.png`}
+						alt={selectedDatabase?.name}
+					/>
+				</Avatar>
+				<h1 className="text-md font-normal">{selectedDatabase.name}</h1>
+				<ConfirmDialog onConfirm={() => {}}>
+					<Button variant="ghost">
+						<Trash2 size={12} />
+					</Button>
+				</ConfirmDialog>
+			</div>
 			<div className="flex items-center gap-4">
 				<h1 className="text-3xl font-extrabold">
 					{selectedTable.name}
@@ -69,14 +105,13 @@ export default function Table() {
 					</Button>
 				</ConfirmDialog>
 			</div>
-			<table className="w-full">
+			<table className="w-full mt-4">
 				<thead>
 					<tr className="flex w-full">
 						{table.columns.map((column, i) => (
 							<th
 								key={i}
-								className="flex-1 p-2 border flex items-center gap-2"
-							>
+								className="w-60 flex-1 p-2 border flex items-center gap-2">
 								<span>{column.name}</span>
 								<span className="text-xs text-gray-400">
 									({column.type})
@@ -85,22 +120,37 @@ export default function Table() {
 						))}
 						<th>
 							<Button variant="ghost" className="ml-4">
-								<Plus />
+								<Plus size={15} />
 							</Button>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
 					{table.rows.map((row, i) => (
-						<tr key={i}></tr>
+						<tr key={i} className="flex w-full">
+							{Object.entries(row).map(([key, value], i) => (
+								<td
+									key={i}
+									className="w-60 flex-1 p-2 border flex items-center gap-2">
+									<span>{value}</span>
+								</td>
+							))}
+							<td>
+								<ConfirmDialog
+									onConfirm={() => deleteTableRow(row)}>
+									<Button variant="ghost" className="ml-4">
+										<Trash2 size={15} />
+									</Button>
+								</ConfirmDialog>
+							</td>
+						</tr>
 					))}
-					{rowToAdd.length > 0 && (
+					{rowToAdd && rowToAdd.length > 0 && (
 						<tr className="flex w-full">
 							{rowToAdd.map((column: any, i: number) => (
 								<td
 									key={i}
-									className="flex-1 border flex items-center gap-2"
-								>
+									className="w-60 flex-1 border flex items-center gap-2">
 									<input
 										type="text"
 										className="w-full p-2"
@@ -123,9 +173,8 @@ export default function Table() {
 								<Button
 									variant="ghost"
 									onClick={addRow}
-									className="ml-4"
-								>
-									<Check />
+									className="ml-4">
+									<Check size={15} />
 								</Button>
 							</td>
 						</tr>
@@ -135,14 +184,15 @@ export default function Table() {
 			<Button
 				variant="default"
 				onClick={() =>
-					setRowToAdd(
-						table.columns.map((column) => {
-							return { key: column.name, value: "" };
-						})
-					)
-				}
-			>
-				Add Row
+					rowToAdd && rowToAdd.length > 0
+						? setRowToAdd(null)
+						: setRowToAdd(
+								table.columns.map((column) => {
+									return { key: column.name, value: "" };
+								})
+						  )
+				}>
+				{rowToAdd && rowToAdd.length > 0 ? "Cancel" : "Add Row"}
 			</Button>
 		</div>
 	);

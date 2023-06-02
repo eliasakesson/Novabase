@@ -12,11 +12,10 @@ export default function PostTable(
 			const sql = `INSERT INTO ${tableName} (${table
 				.map((col) => col.key)
 				.join(", ")}) VALUES (${table
-				.map((col) => col.value)
+				.map((col) => "?")
 				.join(", ")})`;
-			console.log(sql);
 
-			await db.run(sql);
+			await db.run(sql, table.map((col) => col.value));
 
 			res(table);
 		} catch (error) {

@@ -40,9 +40,31 @@ export default function DatabaseSwitcher({
 
 	useEffect(() => {
 		if (databases.length > 0 && !selectedDatabase) {
+			const selectedDatabaseName =
+				localStorage.getItem("selectedDatabase");
+
+			if (selectedDatabaseName) {
+				const selectedDatabase = databases.find(
+					(database) => database.name === selectedDatabaseName
+				);
+
+				if (selectedDatabase) {
+					setSelectedDatabase(selectedDatabase);
+					return;
+				}
+			}
+
 			setSelectedDatabase(databases[0]);
 		}
 	}, [databases]);
+
+	function SelectDatabase(database: DatabaseProps) {
+		setSelectedTable(null);
+		setSelectedDatabase(database);
+		setOpen(false);
+
+		localStorage.setItem("selectedDatabase", database.name);
+	}
 
 	return (
 		<CreateDatabaseDialog
@@ -76,11 +98,9 @@ export default function DatabaseSwitcher({
 								{databases.map((database) => (
 									<CommandItem
 										key={database.name}
-										onSelect={() => {
-											setSelectedTable(null);
-											setSelectedDatabase(database);
-											setOpen(false);
-										}}
+										onSelect={() =>
+											SelectDatabase(database)
+										}
 										className="text-sm">
 										<Avatar className="mr-2 h-5 w-5">
 											<AvatarImage
