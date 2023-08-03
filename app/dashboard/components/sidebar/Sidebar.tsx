@@ -32,7 +32,7 @@ export default function Sidebar() {
 	}
 
 	return (
-		<div className="h-full border-r p-4 flex flex-col gap-4">
+		<div className="h-full border-r p-4 flex flex-col gap-4 sticky top-[65px]">
 			<DatabaseSwitcher databases={databases} />
 			<TableList />
 			<CreateTableDialog />

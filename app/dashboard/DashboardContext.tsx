@@ -34,7 +34,7 @@ export const useDashboard = () => {
 export interface DatabaseProps {
 	id: string;
 	name: string;
-	tables: TableProps[];
+	ownerUID: string;
 }
 
 interface TableProps {

@@ -2,7 +2,9 @@ import { useDashboard } from "../../DashboardContext";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { GetUsers } from "@/utils/AuthManager";
 import {
+	DeleteDatabase,
 	DeleteTable,
 	DeleteTableRow,
 	GetTable,
@@ -17,9 +19,14 @@ interface TableProps {
 }
 
 export default function Table() {
-	const { selectedDatabase, selectedTable, setSelectedTable } =
-		useDashboard();
+	const {
+		selectedDatabase,
+		setSelectedDatabase,
+		selectedTable,
+		setSelectedTable,
+	} = useDashboard();
 	const [table, setTable] = useState<TableProps>({ columns: [], rows: [] });
+	console.log(table);
 	const [rowToAdd, setRowToAdd] = useState<any>([]);
 
 	useEffect(() => {
@@ -28,6 +35,16 @@ export default function Table() {
 
 	function getTable() {
 		if (!selectedTable || !selectedDatabase) return;
+
+		if (selectedTable.name === "Users") {
+			GetUsers()
+				.then((res: any) => {
+					setTable(res);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
 
 		GetTable(selectedDatabase.id, selectedTable.name)
 			.then((res: any) => {
@@ -77,6 +94,27 @@ export default function Table() {
 			});
 	}
 
+	function deleteDatabase() {
+		if (!selectedDatabase) return;
+
+		DeleteDatabase(selectedDatabase.id)
+			.then(() => {
+				setSelectedDatabase(null);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	function isJsonString(str: string) {
+		try {
+			JSON.parse(str);
+		} catch (e) {
+			return false;
+		}
+		return true;
+	}
+
 	if (!selectedDatabase || !selectedTable) return null;
 
 	return (
@@ -89,7 +127,7 @@ export default function Table() {
 					/>
 				</Avatar>
 				<h1 className="text-md font-normal">{selectedDatabase.name}</h1>
-				<ConfirmDialog onConfirm={() => {}}>
+				<ConfirmDialog onConfirm={deleteDatabase}>
 					<Button variant="ghost">
 						<Trash2 size={12} />
 					</Button>
@@ -111,7 +149,8 @@ export default function Table() {
 						{table.columns.map((column, i) => (
 							<th
 								key={i}
-								className="w-60 flex-1 p-2 border flex items-center gap-2">
+								className="w-60 flex-1 p-2 border flex items-center gap-2"
+							>
 								<span>{column.name}</span>
 								<span className="text-xs text-gray-400">
 									({column.type})
@@ -131,13 +170,43 @@ export default function Table() {
 							{Object.entries(row).map(([key, value], i) => (
 								<td
 									key={i}
-									className="w-60 flex-1 p-2 border flex items-center gap-2">
-									<span>{value}</span>
+									className="w-60 flex-1 p-2 border flex items-center gap-2"
+								>
+									<span>
+										{isJsonString(value) ? (
+											Array.isArray(JSON.parse(value)) ? (
+												<ol>
+													{JSON.parse(value).map(
+														(
+															item: any,
+															index: number
+														) => (
+															<li
+																key={index}
+																className={`list-inside list-decimal ${
+																	index > 0
+																		? "border-t"
+																		: ""
+																}`}
+															>
+																{item}
+															</li>
+														)
+													)}
+												</ol>
+											) : (
+												JSON.parse(value)
+											)
+										) : (
+											value
+										)}
+									</span>
 								</td>
 							))}
 							<td>
 								<ConfirmDialog
-									onConfirm={() => deleteTableRow(row)}>
+									onConfirm={() => deleteTableRow(row)}
+								>
 									<Button variant="ghost" className="ml-4">
 										<Trash2 size={15} />
 									</Button>
@@ -150,7 +219,8 @@ export default function Table() {
 							{rowToAdd.map((column: any, i: number) => (
 								<td
 									key={i}
-									className="w-60 flex-1 border flex items-center gap-2">
+									className="w-60 flex-1 border flex items-center gap-2"
+								>
 									<input
 										type="text"
 										className="w-full p-2"
@@ -173,7 +243,8 @@ export default function Table() {
 								<Button
 									variant="ghost"
 									onClick={addRow}
-									className="ml-4">
+									className="ml-4"
+								>
 									<Check size={15} />
 								</Button>
 							</td>
@@ -191,7 +262,8 @@ export default function Table() {
 									return { key: column.name, value: "" };
 								})
 						  )
-				}>
+				}
+			>
 				{rowToAdd && rowToAdd.length > 0 ? "Cancel" : "Add Row"}
 			</Button>
 		</div>

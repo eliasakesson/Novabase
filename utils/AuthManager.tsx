@@ -45,3 +45,29 @@ export function Register(username: string, email: string, password: string) {
 		}
 	});
 }
+
+export function GetUsers() {
+	return new Promise(async (res, rej) => {
+		try {
+			const fetched = await fetch("http://localhost:8080/v1/auth/users", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+			console.log(fetched);
+
+			const data = await fetched.json();
+			console.log(data);
+
+			if (data.ok) {
+				console.log(data.body);
+				res(data.body);
+			}
+
+			rej(data.body);
+		} catch (err: any) {
+			rej(err.body);
+		}
+	});
+}
