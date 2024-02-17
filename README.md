@@ -25,11 +25,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<div style="display:flex">
-  <img src="public/images/home-page.png" alt="" width="49%" />
-  <img src="public/images/designer.png" alt="" width="49%" />
-</div>
-
 ### Novabase
 
 Novabase is a SQL database management tool built with Next.js, Express and SQLite.
