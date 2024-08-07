@@ -4,7 +4,7 @@ import AuthRouter from "./auth/AuthRouter";
 import DataRouter from "./data/DataRouter";
 
 const app = express();
-const port = 8080;
+const port = 3000;
 
 const v1Router = express.Router();
 v1Router.use("/auth", AuthRouter);
